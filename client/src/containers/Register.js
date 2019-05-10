@@ -61,9 +61,9 @@ class Register extends Component {
           password,
         })
         .then(response => {
-          // console.log(response.data.message);
+          console.log(response);
           this.setState({
-            messageFromServer: response.data.message,
+            messageFromServer: response.status,
             showError: false,
             loginError: false,
             registerError: false,
@@ -167,7 +167,7 @@ class Register extends Component {
         </div>
       );
     }
-    if (messageFromServer === 'user created') {
+    if (messageFromServer === 201) {
       return (
         <div>
           <HeaderBar title={title} />
@@ -179,6 +179,8 @@ class Register extends Component {
           />
         </div>
       );
+    } else{
+      return(<h1>Else Case!</h1>)
     }
   }
 }

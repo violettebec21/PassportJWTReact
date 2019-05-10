@@ -1,5 +1,7 @@
 /* eslint-disable no-console */
 const passport = require('passport');
+// const passportLocal = require('passport-local');
+const passportJwt = require('passport-jwt');
 const {User} = require('../models');
 
 module.exports = (app) => {
@@ -134,80 +136,61 @@ module.exports = (app) => {
 
 
 //login user route--------------------------------------------------------------------------------------------
-  app.post('/loginUser', (req, res, next) => {
-    passport.authenticate('login', (err, users, info) => {
-      if (err) {
-        console.error(`error ${err}`);
-      }
-      if (info !== undefined) {
-        console.error(info.message);
-        if (info.message === 'bad username') {
-          res.status(401).send(info.message);
-        } else {
-          res.status(403).send(info.message);
-        }
-      } else {
-        req.logIn(users, () => {
-          User.findOne({
-            where: {
-              username: req.body.username,
-            },
-          }).then((user) => {
-            const token = jwt.sign({ id: user.id }, jwtSecret.secret);
-            res.status(200).send({
-              auth: true,
-              token,
-              message: 'user found & logged in',
-            });
-          });
-        });
-      }
-    })(req, res, next);
-  });
+  app.post('/login',// passport.authenticate('login'), (req, res) => {
+    //console.log("hitting login route");
+    // try{
+    // console.log("THis is the req:" , req.body);
+    passport.authenticate('local'),
+    function(req, res) {
+      // If this function gets called, authentication was successful.
+      // `req.user` contains the authenticated user.
+      console.log(req.user);
+      res.redirect('/users/' + req.user.username);
+    // }catch(err){
+    //   console.log("on line 145, error", err);
+    // }
+    }
+    // passport.authenticate('login', (err, users, info) => {
+    //   if (err) {
+    //     console.error(`error ${err}`);
+    //   }
+    //   if (info !== undefined) {
+    //     console.error(info.message);
+    //     if (info.message === 'bad username') {
+    //       res.status(401).send(info.message);
+    //     } else {
+    //       res.status(403).send(info.message);
+    //     }
+    //   } else {
+    //     req.logIn(users, () => {
+    //       User.findOne({
+    //         where: {
+    //           username: req.body.username,
+    //         },
+    //       }).then((user) => {
+    //         const token = jwt.sign({ id: user.id }, jwtSecret.secret);
+    //         res.status(200).send({
+    //           auth: true,
+    //           token,
+    //           message: 'user found & logged in',
+    //         });
+    //       });
+    //     });
+    //   }
+    // })(req, res, next);
+);
   
 
 //register user route--------------------------------------------------------------------------------------------
-  app.post('/register', (req, res, next) => {
+  app.post('/register', async (req, res, next) => {
     console.log("HITTING REGISTER @$(%&$!)");
-    passport.authenticate('register', (err, user, info) => {
-      if (err) {
-        console.log(err);
-      }
-      try {
-      if (info != undefined) {
-        console.log(info.message);
-        res.send(info.message);
-      } else {
-        req.logIn(user, err => {
-          const data = {
-            first_name: req.body.first_name,
-            last_name: req.body.last_name,
-            email: user.email,
-            username: req.body.username,
-          };
-          console.log(data);
-          User.findOne({
-            where: {
-              email: user.email,
-            },
-          }).then(user => {
-            user
-              .update({
-                first_name: data.first_name,
-                last_name: data.last_name,
-                username: data.username,
-              })
-              .then(() => {
-                console.log('user created in db');
-                res.status(200).send({ message: 'user created' });
-              });
-          });
-        });
-      }
-       } catch (err){
-         console.log(err);
-       }
-    })(req, res, next);
+    // console.log(req.body);
+    try {
+      const user = await User.create(req.body);
+      res.status(201).json(user);
+    } catch(err) {
+      next(err);
+    }
   });
 
 

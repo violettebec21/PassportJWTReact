@@ -49,12 +49,12 @@ class Login extends Component {
       });
     } else {
       axios
-        .post('http://localhost:3003/loginUser', {
+        .post('http://localhost:8080/login', {
           username,
           password,
         })
         .then((response) => {
-          // console.log(response.data);
+          console.log(response.data);
           localStorage.setItem('JWT', response.data.token);
           this.setState({
             loggedIn: true,
@@ -64,19 +64,19 @@ class Login extends Component {
           console.log("working til here");
 
         })
-        // .catch((error) => {
-        //   console.log("ARE YOU THERE");
-        //   // console.error(error.response.data);
-        //   if (
-        //     error.response.data === 'bad username'
-        //     || error.response.data === 'passwords do not match'
-        //   ) {
-        //     this.setState({
-        //       showError: true,
-        //       showNullError: false,
-        //     });
-        //   }
-        // });
+        .catch((error) => {
+          console.log("ARE YOU THERE");
+          // console.error(error.response.data);
+          if (
+            error.response.data === 'bad username'
+            || error.response.data === 'passwords do not match'
+          ) {
+            this.setState({
+              showError: true,
+              showNullError: false,
+            });
+          }
+        });
     }
   };
 
