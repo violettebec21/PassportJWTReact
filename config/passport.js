@@ -59,32 +59,48 @@ passport.use(
   'login',
   new localStrategy(
     {
-      emailField: 'email',
+      // emailField: 'email',
+      usernameField: 'username',
       passwordField: 'password',
       session: false,
     },
-    (email, password, done) => {
+    (username, password, done) => {
+      console.log("In local strategy!");
+      // console.log(username,password,done);
       try {
         User.findOne({
           where: {
-            email: email,
+            // email: email,
+            username: username,
           },
         }).then(user => {
+          // console.log("here is the user password:", user.password)
           if (user === null) {
+            // console.log('got into .then');
             return done(null, false, { message: 'bad username' });
           } else {
-            bcrypt.compare(password, user.password).then(response => {
-              if (response !== true) {
-                console.log('passwords do not match');
-                return done(null, false, { message: 'passwords do not match' });
+            // console.log("inside the Else before bcrypt", bcrypt.compare);
+            bcrypt.compare(password, user.password, function(err,res){
+              if(err){
+                console.error(err);
+              } else {
+                console.log("passwords match!");
+                return true;
               }
-              console.log('user found & authenticated');
-              // note the return needed with passport local - remove this return for passport JWT
-              return done(null, user);
-            });
+            })//.then(response => {
+        //       console.log("This is the bcrypt response:", response);
+        //       if (response !== true) {
+        //         console.log('passwords do not match');
+        //         return done(null, false, { message: 'passwords do not match' });
+        //       }
+        //       console.log('user found & authenticated');
+        //       // note the return needed with passport local - remove this return for passport JWT
+        //       return done(null, user);
+        //     });
           }
-        });
+        })
       } catch (err) {
+        console.log("Here is the error:", err);
         done(err);
       }
     },
