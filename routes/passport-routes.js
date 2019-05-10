@@ -136,49 +136,55 @@ module.exports = (app) => {
 
 
 //login user route--------------------------------------------------------------------------------------------
-  app.post('/login',// passport.authenticate('login'), (req, res) => {
-    //console.log("hitting login route");
+  app.post('/login', (req,res) => {// passport.authenticate('login'), (req, res) => {
+    // console.log("hitting login route");
     // try{
     // console.log("THis is the req:" , req.body);
-    passport.authenticate('local'),
-    function(req, res) {
-      // If this function gets called, authentication was successful.
-      // `req.user` contains the authenticated user.
-      console.log(req.user);
-      res.redirect('/users/' + req.user.username);
-    // }catch(err){
-    //   console.log("on line 145, error", err);
+    // passport.authenticate('local-login', {failureFlaash: "Invalid username or password!"}),
+    // function(req, res) {
+    //   // If this function gets called, authentication was successful.
+    //   // `req.user` contains the authenticated user.
+    //   console.log("hit passport authenticate 147!");
+    //   console.log(req.user);
+    //   res.redirect('/users/' + req.user.username);
+    // // }catch(err){
+    // //   console.log("on line 145, error", err);
+    // // }
     // }
-    }
-    // passport.authenticate('login', (err, users, info) => {
-    //   if (err) {
-    //     console.error(`error ${err}`);
-    //   }
-    //   if (info !== undefined) {
-    //     console.error(info.message);
-    //     if (info.message === 'bad username') {
-    //       res.status(401).send(info.message);
-    //     } else {
-    //       res.status(403).send(info.message);
-    //     }
-    //   } else {
-    //     req.logIn(users, () => {
-    //       User.findOne({
-    //         where: {
-    //           username: req.body.username,
-    //         },
-    //       }).then((user) => {
-    //         const token = jwt.sign({ id: user.id }, jwtSecret.secret);
-    //         res.status(200).send({
-    //           auth: true,
-    //           token,
-    //           message: 'user found & logged in',
-    //         });
-    //       });
-    //     });
-    //   }
-    // })(req, res, next);
-);
+
+    // break!
+
+
+    passport.authenticate('local-login', (err, users, info) => {
+      console.log("hit authenticate!");
+      if (err) {
+        console.error(`error ${err}`);
+      }
+      if (info !== undefined) {
+        console.error(info.message);
+        if (info.message === 'bad username') {
+          res.status(401).send(info.message);
+        } else {
+          res.status(403).send(info.message);
+        }
+      } else {
+        req.logIn(users, () => {
+          User.findOne({
+            where: {
+              username: req.body.username,
+            },
+          }).then((user) => {
+            const token = jwt.sign({ id: user.id }, jwtSecret.secret);
+            res.status(200).send({
+              auth: true,
+              token,
+              message: 'user found & logged in',
+            });
+          });
+        });
+      }
+    })//(req, res, next);
+  });
   
 
 //register user route--------------------------------------------------------------------------------------------

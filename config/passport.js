@@ -9,7 +9,7 @@ const passport = require('passport'),
   ExtractJWT = require('passport-jwt').ExtractJwt;
 
 passport.use(
-  'register',
+  'local-login',
   new localStrategy(
     {
       usernameField: 'email',
