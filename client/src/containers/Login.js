@@ -64,19 +64,19 @@ class Login extends Component {
           console.log("working til here");
 
         })
-        // .catch((error) => {
-        //   console.log("ARE YOU THERE");
-        //   // console.error(error.response.data);
-        //   if (
-        //     error.response.data === 'bad username'
-        //     || error.response.data === 'passwords do not match'
-        //   ) {
-        //     this.setState({
-        //       showError: true,
-        //       showNullError: false,
-        //     });
-        //   }
-        // });
+        .catch((error) => {
+          console.log("ARE YOU THERE");
+          // console.error(error.response.data);
+          if (
+            error.response.data === 'bad username'
+            || error.response.data === 'passwords do not match'
+          ) {
+            this.setState({
+              showError: true,
+              showNullError: false,
+            });
+          }
+        });
     }
   };
 

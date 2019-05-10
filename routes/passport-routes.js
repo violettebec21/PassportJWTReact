@@ -135,6 +135,7 @@ module.exports = (app) => {
 
 //login user route--------------------------------------------------------------------------------------------
   app.post('/loginUser', (req, res, next) => {
+    console.log("hitting loginUser route");
     passport.authenticate('login', (err, users, info) => {
       if (err) {
         console.error(`error ${err}`);
@@ -167,47 +168,15 @@ module.exports = (app) => {
   
 
 //register user route--------------------------------------------------------------------------------------------
-  app.post('/register', (req, res, next) => {
+  app.post('/register', async (req, res, next) => {
     console.log("HITTING REGISTER @$(%&$!)");
-    passport.authenticate('register', (err, user, info) => {
-      if (err) {
-        console.log(err);
-      }
-      try {
-      if (info != undefined) {
-        console.log(info.message);
-        res.send(info.message);
-      } else {
-        req.logIn(user, err => {
-          const data = {
-            first_name: req.body.first_name,
-            last_name: req.body.last_name,
-            email: user.email,
-            username: req.body.username,
-          };
-          console.log(data);
-          User.findOne({
-            where: {
-              email: user.email,
-            },
-          }).then(user => {
-            user
-              .update({
-                first_name: data.first_name,
-                last_name: data.last_name,
-                username: data.username,
-              })
-              .then(() => {
-                console.log('user created in db');
-                res.status(200).send({ message: 'user created' });
-              });
-          });
-        });
-      }
-       } catch (err){
-         console.log(err);
-       }
-    })(req, res, next);
+    // console.log(req.body);
+    try {
+      const user = await User.create(req.body);
+      res.status(201).json(user);
+    } catch(err) {
+      next(err);
+    }
   });
 
 
