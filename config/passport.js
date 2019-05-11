@@ -56,7 +56,7 @@ passport.use(
 );
 
 passport.use(
-  'login',
+  'login-local',
   new localStrategy(
     {
       // emailField: 'email',
@@ -115,6 +115,7 @@ const opts = {
 passport.use(
   'jwt',
   new JWTstrategy(opts, (jwt_payload, done) => {
+    console.log("In jwt");
     try {
       User.findOne({
         where: {
