@@ -136,7 +136,7 @@ module.exports = (app) => {
 
 
 //login user route--------------------------------------------------------------------------------------------
-  app.post('/login', (req,res) => {// passport.authenticate('login'), (req, res) => {
+  app.post('/login', (req,res, next) => {// passport.authenticate('login'), (req, res) => {
     // console.log("hitting login route");
     // try{
     // console.log("THis is the req:" , req.body);
