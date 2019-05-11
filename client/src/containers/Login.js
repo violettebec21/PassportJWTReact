@@ -16,7 +16,7 @@ import {
 } from '../components/Login';
 
 const title = {
-  pageTitle: 'Login Screen',
+  pageTitle: 'ThisforThat',
 };
 
 class Login extends Component {
@@ -40,7 +40,10 @@ class Login extends Component {
 
   loginUser = (e) => {
     e.preventDefault();
-    const { username, password } = this.state;
+    //TESTING REMOVE BEFORE PRODUCTION
+    console.log("loginuser reached!")
+    console.log(this.state);
+    const { username, password } = this.state; 
     if (username === '' || password === '') {
       this.setState({
         showError: false,
@@ -57,26 +60,28 @@ class Login extends Component {
           console.log(response.data);
           localStorage.setItem('JWT', response.data.token);
           this.setState({
+            // 64/65 added by santiago
+            username: response.data.username,
+            password: response.data.password,
             loggedIn: true,
             showError: false,
             showNullError: false,
           });
-          console.log("working til here");
-
+          console.log('working on 69')
         })
-        .catch((error) => {
-          console.log("ARE YOU THERE");
-          // console.error(error.response.data);
-          if (
-            error.response.data === 'bad username'
-            || error.response.data === 'passwords do not match'
-          ) {
-            this.setState({
-              showError: true,
-              showNullError: false,
-            });
-          }
-        });
+        // .catch((error) => {
+        //   console.log("ARE YOU THERE");
+        //   // console.error(error.response.data);
+        //   if (
+        //     error.response.data === 'bad username'
+        //     || error.response.data === 'passwords do not match'
+        //   ) {
+        //     this.setState({
+        //       showError: true,
+        //       showNullError: false,
+        //     });
+        //   }
+        // });
     }
   };
 
